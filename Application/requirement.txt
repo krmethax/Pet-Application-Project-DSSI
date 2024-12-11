@@ -1,0 +1,3 @@
+expo-font
+expo-app-loading
+react-native-safe-area-context
