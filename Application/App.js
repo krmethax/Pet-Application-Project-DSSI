@@ -4,7 +4,7 @@ export default function App() {
   return (
     <View>
       <Text>
-        สวัสดี
+        
       </Text>
     </View>
   );
