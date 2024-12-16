@@ -15,7 +15,7 @@ export default function App() {
 
   if (error) {
     console.error('Error loading font:', error);
-    return <Text>เกิดข้อผิดพลาดในการโหลดฟอนต์</Text>;
+    return <Text></Text>;
   }
 
   if (!fontsLoaded) {

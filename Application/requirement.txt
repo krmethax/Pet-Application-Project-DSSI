@@ -3,3 +3,5 @@ expo-app-loading
 react-native-safe-area-context
 native-stack
 react-native-paper
+react-native-community/datetimepicker
+react-native-vector-icons

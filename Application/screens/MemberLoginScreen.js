@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function MemberLoginScreen() {
+  const navigation = useNavigation(); // เรียกใช้ navigation hook
   return (
     <SafeAreaView style={styles.container}>
       {/* โลโก้ */}
@@ -43,7 +45,8 @@ export default function MemberLoginScreen() {
       {/* ข้อความสมัครสมาชิก */}
       <View style={styles.signupContainer}>
         <Text style={[styles.signupText, { fontFamily: 'IBMPlexSansThai-Light' }]}>ยังไม่มีบัญชี ? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SignUp')}>
           <Text style={[styles.signupButtonText, { fontFamily: 'IBMPlexSansThai-Medium' }]}>สมัคร</Text>
         </TouchableOpacity>
       </View>
@@ -60,10 +63,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   icon: {
-    width: 400,
+    width: 300,
     height: 200,
     resizeMode: 'contain',
-    marginBottom: 30,
+    marginBottom: 10,
     alignSelf: 'center',
   },
   title: {
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '100%',
-    height: 50,
+    height: 60,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
   },
   signupContainer: {
     flexDirection: 'row',
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
   },
 
   loginText: {
-    fontSize: 18,
+    fontSize: 19,
     marginBottom: 10,
     color: '#000',
   },
