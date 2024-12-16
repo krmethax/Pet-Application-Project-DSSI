@@ -5,3 +5,4 @@ native-stack
 react-native-paper
 react-native-community/datetimepicker
 react-native-vector-icons
+react-native-animatable

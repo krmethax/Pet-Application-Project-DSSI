@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
+import * as Animatable from 'react-native-animatable';  // Import Animatable
 
 export default function SignUpScreen({ navigation }) {
     const [firstName, setFirstName] = useState('');
@@ -27,13 +28,53 @@ export default function SignUpScreen({ navigation }) {
         }
     };
 
-    const handleSignUp = () => {
-        if (password === confirmPassword && isAgreed) {
-            navigation.navigate('SignUpSuccess');
-        } else {
-            Alert.alert('กรุณาตรวจสอบรหัสผ่านและยอมรับข้อตกลง');
+    const handleSignUp = async () => {
+        if (password !== confirmPassword) {
+            Alert.alert('รหัสผ่านไม่ตรงกัน');
+            return;
+        }
+    
+        if (!isAgreed) {
+            Alert.alert('กรุณายอมรับข้อตกลง');
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://192.168.242.111:3000/api/users/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstname: firstName,
+                    lastname: lastName,
+                    date_of_birth: date.toISOString().split('T')[0], // ส่งวันที่ในรูปแบบ 'YYYY-MM-DD'
+                    tel: phoneNumber,
+                    email,
+                    password,
+                    confirm_password: confirmPassword,
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.error === 'อีเมลนี้ถูกใช้งานไปแล้ว') {
+                    Alert.alert('เกิดข้อผิดพลาด', 'อีเมลนี้ถูกใช้งานไปแล้ว');
+                } else {
+                    Alert.alert('เกิดข้อผิดพลาดในการสมัครสมาชิก');
+                }
+                return;
+            }
+    
+            const data = await response.json();
+            Alert.alert('สมัครสมาชิกสำเร็จ');
+            navigation.navigate('MemberLogin');
+        } catch (error) {
+            console.error(error);
+            Alert.alert('เกิดข้อผิดพลาดในการสมัครสมาชิก');
         }
     };
+    
 
     const onChangeDate = (event, selectedDate) => {
         setShowDatePicker(false);
@@ -70,25 +111,25 @@ export default function SignUpScreen({ navigation }) {
                             <TextInput style={styles.input} value={phoneNumber} onChangeText={setPhoneNumber} keyboardType="phone-pad" />
 
                             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                                <Text style={styles.buttonText}>ถัดไป</Text>
+                                <Text style={[styles.buttonText, { fontFamily: 'IBMPlexSansThai-Medium' }]}>ถัดไป</Text>
                             </TouchableOpacity>
                         </>
                     )}
 
                     {step === 2 && (
                         <>
-                            <Text style={styles.header}>อีเมล</Text>
+                            <Text style={[styles.header, { fontFamily: 'IBMPlexSansThai-Medium' }]}>อีเมล</Text>
                             <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
 
-                            <Text style={styles.header}>รหัสผ่าน</Text>
+                            <Text style={[styles.header, { fontFamily: 'IBMPlexSansThai-Medium' }]}>รหัสผ่าน</Text>
                             <View style={styles.passwordContainer}>
                                 <TextInput style={styles.input} value={password} onChangeText={setPassword} secureTextEntry={!showPassword} />
                                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
-                                    <Icon name={showPassword ? 'eye' : 'eye-off'} size={24} color="#888" />
+                                    <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} color="#888" />
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.header}>ยืนยันรหัสผ่าน</Text>
+                            <Text style={[styles.header, { fontFamily: 'IBMPlexSansThai-Medium' }]}>ยืนยันรหัสผ่าน</Text>
                             <View style={styles.passwordContainer}>
                                 <TextInput
                                     style={styles.input}
@@ -102,12 +143,12 @@ export default function SignUpScreen({ navigation }) {
                             </View>
 
                             <TouchableOpacity onPress={() => setIsAgreed(!isAgreed)} style={styles.agreementContainer}>
-                                <Icon name={isAgreed ? 'check-square' : 'square'} size={24} color="#00C283" />
-                                <Text style={styles.agreementText}>ยินยอมรับข้อตกลงทั้งหมด</Text>
+                                <Icon name={isAgreed ? 'check-square' : 'square'} size={20} color="#00C283" />
+                                <Text style={[styles.agreementText, { fontFamily: 'IBMPlexSansThai-Medium' }]}>ยินยอมรับข้อตกลงทั้งหมด</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-                                <Text style={styles.buttonText}>สมัครสมาชิก</Text>
+                                <Text style={[styles.buttonText, { fontFamily: 'IBMPlexSansThai-Medium' }]}>สมัครสมาชิก</Text>
                             </TouchableOpacity>
                         </>
                     )}
@@ -168,7 +209,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 16,
     },
     agreementContainer: {
         flexDirection: 'row',
